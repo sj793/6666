@@ -41,7 +41,7 @@ elif page == "편의점 지도":
     st.write("학교 주변의 편의점을 알아봅시다.")
 
     # 네이버 지도 API JavaScript Key
-    naver_map_api_key = "m16vbixgmx"  # 발급받은 JavaScript API Key로 교체하세요.
+    naver_map_api_key = "m16vbixgmx"  # 발급받은 JavaScript API Key
 
     # HTML 코드로 네이버 지도 렌더링
     html_code = f"""
@@ -63,56 +63,61 @@ elif page == "편의점 지도":
     <body>
         <div id="map"></div>
         <script>
-            var mapOptions = {{
-                center: new naver.maps.LatLng(37.570028, 126.987080),  // 종로3가역 좌표
-                zoom: 14
-            }};
-            var map = new naver.maps.Map('map', mapOptions);
+            try {{
+                var mapOptions = {{
+                    center: new naver.maps.LatLng(37.570028, 126.987080),  // 종로3가역 좌표
+                    zoom: 14
+                }};
+                var map = new naver.maps.Map('map', mapOptions);
 
-            // 마커 추가
-            var marker = new naver.maps.Marker({{
-                position: new naver.maps.LatLng(37.570028, 126.987080),
-                map: map
-            }});
-
-            // 인포 윈도우 추가
-            var infowindow = new naver.maps.InfoWindow({{
-                content: "<div style='width:150px;text-align:center;padding:10px;'>종로3가역</div>"
-            }});
-
-            // 마커 클릭 이벤트
-            naver.maps.Event.addListener(marker, "click", function(e) {{
-                if (infowindow.getMap()) {{
-                    infowindow.close();
-                }} else {{
-                    infowindow.open(map, marker);
-                }}
-            }});
-
-            // 편의점 마커 추가 (예시)
-            var convenienceStores = [
-                {{ lat: 37.571028, lng: 126.988080, name: "GS25 종로점" }},
-                {{ lat: 37.569028, lng: 126.986080, name: "CU 종로점" }}
-            ];
-
-            convenienceStores.forEach(function(store) {{
-                var storeMarker = new naver.maps.Marker({{
-                    position: new naver.maps.LatLng(store.lat, store.lng),
+                // 마커 추가
+                var marker = new naver.maps.Marker({{
+                    position: new naver.maps.LatLng(37.570028, 126.987080),
                     map: map
                 }});
 
-                var storeInfoWindow = new naver.maps.InfoWindow({{
-                    content: `<div style='width:150px;text-align:center;padding:10px;'>${{store.name}}</div>`
+                // 인포 윈도우 추가
+                var infowindow = new naver.maps.InfoWindow({{
+                    content: "<div style='width:150px;text-align:center;padding:10px;'>종로3가역</div>"
                 }});
 
-                naver.maps.Event.addListener(storeMarker, "click", function(e) {{
-                    if (storeInfoWindow.getMap()) {{
-                        storeInfoWindow.close();
+                // 마커 클릭 이벤트
+                naver.maps.Event.addListener(marker, "click", function(e) {{
+                    if (infowindow.getMap()) {{
+                        infowindow.close();
                     }} else {{
-                        storeInfoWindow.open(map, storeMarker);
+                        infowindow.open(map, marker);
                     }}
                 }});
-            }});
+
+                // 편의점 마커 추가 (예시)
+                var convenienceStores = [
+                    {{ lat: 37.571028, lng: 126.988080, name: "GS25 종로점" }},
+                    {{ lat: 37.569028, lng: 126.986080, name: "CU 종로점" }}
+                ];
+
+                convenienceStores.forEach(function(store) {{
+                    var storeMarker = new naver.maps.Marker({{
+                        position: new naver.maps.LatLng(store.lat, store.lng),
+                        map: map
+                    }});
+
+                    var storeInfoWindow = new naver.maps.InfoWindow({{
+                        content: `<div style='width:150px;text-align:center;padding:10px;'>${{store.name}}</div>`
+                    }});
+
+                    naver.maps.Event.addListener(storeMarker, "click", function(e) {{
+                        if (storeInfoWindow.getMap()) {{
+                            storeInfoWindow.close();
+                        }} else {{
+                            storeInfoWindow.open(map, storeMarker);
+                        }}
+                    }});
+                }});
+            }} catch (error) {{
+                document.getElementById('map').innerHTML = "지도 로드 중 오류가 발생했습니다. 네트워크 상태 및 API 키를 확인해주세요.";
+                console.error("네이버 지도 오류:", error);
+            }}
         </script>
     </body>
     </html>
@@ -120,6 +125,7 @@ elif page == "편의점 지도":
 
     # Streamlit에서 HTML 렌더링
     st.components.v1.html(html_code, height=600)
+
 
 
 elif page == "예산 확인":
